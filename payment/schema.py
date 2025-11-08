@@ -67,7 +67,8 @@ class Query(graphene.ObjectType):
                 Q(reconciliation_date__isnull=False)
             )
 
-        return gql_optimizer.query(Payment.objects.filter(*filters).distinct().all(), info)
+        query = Payment.objects.filter(*filters).distinct().order_by('-date_created')
+        return gql_optimizer.query(query, info)
 
     def resolve_payment_details(self, info, **kwargs):
         if not info.context.user.has_perms(PaymentConfig.gql_query_payments_perms):
